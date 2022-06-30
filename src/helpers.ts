@@ -1,4 +1,5 @@
 const Readable = ["", "txt", "md", "README", "html", "css"];
+const PathRegex = /^\.?\/(?:[^/]+\/)*[^/]+\/?$/;
 
 /**
  * Check if a file is human-readable by its extension
@@ -11,4 +12,17 @@ export const isReadable = (ext: string) => {
     return true;
   }
   return false;
+};
+
+/**
+ * Checks if a path given is valid
+ * @param path the path to check
+ * @returns is the path valid?
+ */
+export const isValidPath = (path: string) => {
+  return !!path.match(PathRegex);
+};
+
+export const wrapHtml = (content: string, wrapper: string) => {
+  return `<${wrapper}>\n${content}\n</${wrapper}>`;
 };

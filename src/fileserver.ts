@@ -1,4 +1,4 @@
-import { isReadable } from "./helpers.ts";
+import { isReadable, wrapHtml, isValidPath } from "./helpers.ts";
 
 export class FileServer {
   private Server: Deno.Listener;
@@ -10,6 +10,8 @@ export class FileServer {
    * @param basepath The path from which files should be served e.g. `./data`
    */
   constructor(port: number, basepath: string) {
+    if (!isValidPath(basepath)) throw new Error("Invalid Path.");
+
     this.BasePath = basepath;
     this.Server = Deno.listen({ port });
   }
@@ -99,7 +101,7 @@ export class FileServer {
       const subDir = patharr.splice(0, patharr.length - 2).join("/");
       const prevPath = subDir + "/";
 
-      let text = "<pre>\n";
+      let text = "";
 
       text += `Content of <a href="${prevPath}">${filepath}</a>\n\n`;
       try {
@@ -113,7 +115,7 @@ export class FileServer {
         console.warn(e);
       }
 
-      text += "\n</pre>";
+      text = wrapHtml(text, "pre");
 
       const response = new Response(text, {
         headers: { "content-type": "text/html; charset=utf-8" },
@@ -131,7 +133,7 @@ export class FileServer {
       const subDir = patharr.splice(0, patharr.length - 1).join("/");
       const prevPath = subDir + "/";
 
-      let text = "<pre>\n";
+      let text = "";
 
       text += `Content of <a href="${prevPath}">${filepath}</a>\n\n`;
       try {
@@ -141,7 +143,7 @@ export class FileServer {
         console.warn(e);
       }
 
-      text += "\n</pre>";
+      text = wrapHtml(text, "pre");
 
       const response = new Response(text, {
         headers: { "content-type": "text/html; charset=utf-8" },
