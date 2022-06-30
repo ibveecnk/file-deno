@@ -23,6 +23,13 @@ export const isValidPath = (path: string) => {
   return !!path.match(PathRegex);
 };
 
-export const wrapHtml = (content: string, wrapper: string) => {
-  return `<${wrapper}>\n${content}\n</${wrapper}>`;
+/**
+ * Wraps content in html tag
+ * @param content the content in the html-node, can be html itself
+ * @param tag the html tag to wrap around content
+ * @param params parameters after tag (e.g. `class="abc"`)
+ * @returns a new html string
+ */
+export const wrapHtml = (content: string, tag: string, params?: string) => {
+  return `<${tag} ${params}>\n${content}\n</${tag}>`;
 };
