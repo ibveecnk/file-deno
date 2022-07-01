@@ -1,5 +1,8 @@
 import { isReadable, wrapHtml, isValidPath } from "./helpers.ts";
 
+/**
+ * The FileServer class, run it by calling `run()` on an Instance
+ */
 export class FileServer {
   private Server: Deno.Listener;
   private BasePath: string;
