@@ -10,7 +10,20 @@ export class FileServer {
    * @param basepath The path from which files should be served e.g. `./data`
    */
   constructor(port: number, basepath: string) {
-    if (!isValidPath(basepath)) throw new Error("Invalid Path.");
+    if (!isValidPath(basepath))
+      throw new Error(`'${basepath} is an invalid path'`);
+
+    try {
+      Deno.stat(basepath).then((res) => {
+        if (!res.isDirectory) {
+          throw new Error(`${basepath}' is not a directory`);
+        }
+      });
+    } catch (error) {
+      if (error instanceof Deno.errors.NotFound) {
+        throw new Error(`Directory ${basepath}' is invalid`);
+      }
+    }
 
     this.BasePath = basepath;
     this.Server = Deno.listen({ port });
