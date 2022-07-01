@@ -1,5 +1,5 @@
 const Readable = ["", "txt", "md", "README", "html", "css"];
-const PathRegex = /^\.?\/(?:[^/]+\/)*[^/]+\/?$/;
+const PathRegex = /^\.{0,2}?\/(?:[^/]+\/)*[^/]+\/?$/;
 type HtmlParams = {
   param: string;
   value: string;
