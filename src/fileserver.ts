@@ -65,7 +65,7 @@ export class FileServer {
 
       const dotArr = filepath.split(".");
       const ext = dotArr.length > 1 ? dotArr[dotArr.length - 1] : "";
-      const download = !isReadable(ext);
+      const download = !isReadable(ext) && stat?.isFile;
 
       if (!download) {
         if (stat?.isFile) {
@@ -74,6 +74,7 @@ export class FileServer {
           await sendDirPage(requestEvent, filepath, fullPath);
         }
       } else {
+        console.log(stat);
         await downloadFile(requestEvent, fullPath, ext);
       }
     }
@@ -125,7 +126,7 @@ export class FileServer {
         for await (const sub of dir) {
           const subname = sub.name + (sub.isDirectory ? "/" : "");
           text += wrapHtml(subname, "a", true, [
-            { param: "href", value: filepath + subname },
+            { param: "href", value: encodeURI(filepath + subname) },
           ]);
         }
       } catch (e) {
@@ -153,7 +154,7 @@ export class FileServer {
       let text = "";
 
       text += `Content of ${wrapHtml(filepath, "a", false, [
-        { param: "href", value: prevPath },
+        { param: "href", value: encodeURI(prevPath) },
       ])}\n\n`;
       try {
         const file = await Deno.readTextFile(fullPath);
