@@ -1,5 +1,9 @@
 const Readable = ["", "txt", "md", "README", "html", "css"];
 const PathRegex = /^\.?\/(?:[^/]+\/)*[^/]+\/?$/;
+type HtmlParams = {
+  param: string;
+  value: string;
+};
 
 /**
  * Check if a file is human-readable by its extension
@@ -25,11 +29,30 @@ export const isValidPath = (path: string) => {
 
 /**
  * Wraps content in html tag
+ *
+ * @example
+ * // text = `<pre style="font-weight: bold;" class="test">text</pre>`
+ * text = wrapHtml(text, "pre",
+ *        [
+ *          { param: "style", value: "font-weight: bold;" },
+ *          { param: "class", value: "test" },
+ *        ]);
+ *
  * @param content the content in the html-node, can be html itself
  * @param tag the html tag to wrap around content
  * @param params parameters after tag (e.g. `class="abc"`)
+ *
  * @returns a new html string
  */
-export const wrapHtml = (content: string, tag: string, params?: string) => {
-  return `<${tag} ${params}>\n${content}\n</${tag}>`;
+export const wrapHtml = (
+  content: string,
+  tag: string,
+  params?: HtmlParams[]
+) => {
+  let pStr = "";
+  params?.forEach((p) => {
+    pStr += `${p.param}="${p.value}" `;
+  });
+  pStr.trim();
+  return `<${tag} ${pStr}>\n${content}\n</${tag}>`;
 };
