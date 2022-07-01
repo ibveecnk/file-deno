@@ -47,6 +47,7 @@ export const isValidPath = (path: string) => {
 export const wrapHtml = (
   content: string,
   tag: string,
+  newLine?: boolean,
   params?: HtmlParams[]
 ) => {
   let pStr = "";
@@ -54,5 +55,5 @@ export const wrapHtml = (
     pStr += `${p.param}="${p.value}" `;
   });
   pStr.trim();
-  return `<${tag} ${pStr}>\n${content}\n</${tag}>`;
+  return `<${tag} ${pStr}>${newLine ? "\n" : ""}${content}</${tag}>`;
 };

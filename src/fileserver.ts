@@ -116,13 +116,17 @@ export class FileServer {
 
       let text = "";
 
-      text += `Content of <a href="${prevPath}">${filepath}</a>\n\n`;
+      text += `Content of ${wrapHtml(filepath, "a", false, [
+        { param: "href", value: prevPath },
+      ])}\n\n`;
       try {
         const dir = await Deno.readDir(fullPath);
 
         for await (const sub of dir) {
           const subname = sub.name + (sub.isDirectory ? "/" : "");
-          text += `<a href="${filepath}${subname}">${subname}</a>\n`;
+          text += wrapHtml(subname, "a", true, [
+            { param: "href", value: filepath + subname },
+          ]);
         }
       } catch (e) {
         console.warn(e);
@@ -148,7 +152,9 @@ export class FileServer {
 
       let text = "";
 
-      text += `Content of <a href="${prevPath}">${filepath}</a>\n\n`;
+      text += `Content of ${wrapHtml(filepath, "a", false, [
+        { param: "href", value: prevPath },
+      ])}\n\n`;
       try {
         const file = await Deno.readTextFile(fullPath);
         text += file;
