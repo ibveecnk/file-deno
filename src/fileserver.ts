@@ -37,7 +37,11 @@ export class FileServer {
    * Listens for HTTP-Requests in an endless loop
    */
   public async run() {
-    this.Server = Deno.listen({ port: this.Port });
+    try {
+      this.Server = Deno.listen({ port: this.Port });
+    } catch (error) {
+      throw new Error(`Server could not be initialized\n${error}`);
+    }
     console.info(`Server is waiting for requests.`);
     console.info(`http://localhost:${this.Port}`);
     for await (const conn of this.Server) {
