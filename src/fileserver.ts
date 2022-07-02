@@ -4,8 +4,9 @@ import { isReadable, wrapHtml, isValidPath } from "./helpers.ts";
  * The FileServer class, run it by calling `run()` on an Instance
  */
 export class FileServer {
-  private Server: Deno.Listener;
   private BasePath: string;
+  private Port: number;
+  private Server: Deno.Listener | undefined;
 
   /**
    * Generates the FileServer
@@ -29,14 +30,16 @@ export class FileServer {
     }
 
     this.BasePath = basepath;
-    this.Server = Deno.listen({ port });
+    this.Port = port;
   }
 
   /**
    * Listens for HTTP-Requests in an endless loop
    */
   public async run() {
+    this.Server = Deno.listen({ port: this.Port });
     console.info(`Server is waiting for requests.`);
+    console.info(`http://localhost:${this.Port}`);
     for await (const conn of this.Server) {
       this.handleHttp(conn);
     }
@@ -77,7 +80,6 @@ export class FileServer {
           await sendDirPage(requestEvent, filepath, fullPath);
         }
       } else {
-        console.log(stat);
         await downloadFile(requestEvent, fullPath, ext);
       }
     }
