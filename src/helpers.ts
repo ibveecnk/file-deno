@@ -1,8 +1,8 @@
 const Readable = ["", "txt", "md", "README", "html", "css"];
 const PathRegex = /^\.{0,2}?\/(?:[^/]+\/)*[^/]+\/?$/;
 type HtmlParams = {
-  param: string;
-  value: string;
+    param: string;
+    value: string;
 };
 
 /**
@@ -11,11 +11,11 @@ type HtmlParams = {
  * @returns is the files plain text human readable?
  */
 export const isReadable = (ext: string) => {
-  ext = ext.trim().replaceAll(".", "");
-  if (Readable.includes(ext)) {
-    return true;
-  }
-  return false;
+    ext = ext.trim().replaceAll(".", "");
+    if (Readable.includes(ext)) {
+        return true;
+    }
+    return false;
 };
 
 /**
@@ -24,7 +24,7 @@ export const isReadable = (ext: string) => {
  * @returns is the path valid?
  */
 export const isValidPath = (path: string) => {
-  return !!path.match(PathRegex);
+    return !!path.match(PathRegex);
 };
 
 /**
@@ -45,15 +45,15 @@ export const isValidPath = (path: string) => {
  * @returns a new html string
  */
 export const wrapHtml = (
-  content: string,
-  tag: string,
-  newLine?: boolean,
-  params?: HtmlParams[]
+    content: string,
+    tag: string,
+    newLine?: boolean,
+    params?: HtmlParams[]
 ) => {
-  let pStr = "";
-  params?.forEach((p) => {
-    pStr += `${p.param}="${p.value}" `;
-  });
-  pStr.trim();
-  return `<${tag} ${pStr}>${newLine ? "\n" : ""}${content}</${tag}>`;
+    let pStr = "";
+    params?.forEach((p) => {
+        pStr += `${p.param}="${p.value}" `;
+    });
+    pStr.trim();
+    return `<${tag} ${pStr}>${newLine ? "\n" : ""}${content}</${tag}>`;
 };
