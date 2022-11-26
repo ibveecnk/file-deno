@@ -56,43 +56,41 @@ export class FileServer {
      * @returns null
      */
     private async handleHttp(conn: Deno.Conn) {
-        let httpConn: Deno.HttpConn;
+        const httpConn: Deno.HttpConn = Deno.serveHttp(conn);
+
         try {
-            httpConn = Deno.serveHttp(conn);
+            for await (const requestEvent of httpConn) {
+                const url = new URL(requestEvent.request.url);
+                const filepath = decodeURIComponent(url.pathname);
+                const fullPath = this.BasePath + filepath;
+
+                // Guard
+                let stat = null;
+
+                try {
+                    stat = await Deno.stat(fullPath);
+                } catch (error) {
+                    if (error instanceof Deno.errors.NotFound) {
+                        return await send404(requestEvent);
+                    }
+                }
+
+                const dotArr = filepath.split(".");
+                const ext = dotArr.length > 1 ? dotArr[dotArr.length - 1] : "";
+                const download = !isReadable(ext) && stat?.isFile;
+
+                if (!download) {
+                    if (stat?.isFile) {
+                        await sendFilePage(requestEvent, filepath, fullPath);
+                    } else if (stat?.isDirectory) {
+                        await sendDirPage(requestEvent, filepath, fullPath);
+                    }
+                } else {
+                    await downloadFile(requestEvent, fullPath, ext);
+                }
+            }
         } catch (error) {
             console.error(error);
-            return;
-        }
-
-        for await (const requestEvent of httpConn) {
-            const url = new URL(requestEvent.request.url);
-            const filepath = decodeURIComponent(url.pathname);
-            const fullPath = this.BasePath + filepath;
-
-            // Guard
-            let stat = null;
-
-            try {
-                stat = await Deno.stat(fullPath);
-            } catch (error) {
-                if (error instanceof Deno.errors.NotFound) {
-                    return await send404(requestEvent);
-                }
-            }
-
-            const dotArr = filepath.split(".");
-            const ext = dotArr.length > 1 ? dotArr[dotArr.length - 1] : "";
-            const download = !isReadable(ext) && stat?.isFile;
-
-            if (!download) {
-                if (stat?.isFile) {
-                    await sendFilePage(requestEvent, filepath, fullPath);
-                } else if (stat?.isDirectory) {
-                    await sendDirPage(requestEvent, filepath, fullPath);
-                }
-            } else {
-                await downloadFile(requestEvent, fullPath, ext);
-            }
         }
 
         async function send404(requestEvent: Deno.RequestEvent) {
