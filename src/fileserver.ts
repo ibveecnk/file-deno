@@ -43,12 +43,10 @@ export class FileServer {
             throw new Error(`Server could not be initialized\n${error}`);
         }
         console.info(`Server is waiting for requests.`);
-        console.info(`http://localhost:${this.Port}`);
+        console.info(`Port: ${this.Port}`);
 
         for await (const conn of this.Server) {
-            if (conn.remoteAddr) {
-                this.handleHttp(conn);
-            }
+            this.handleHttp(conn);
         }
     }
 
@@ -61,6 +59,7 @@ export class FileServer {
         const httpConn = Deno.serveHttp(conn);
 
         for await (const requestEvent of httpConn) {
+            console.log(requestEvent.request.method);
             const url = new URL(requestEvent.request.url);
             const filepath = decodeURIComponent(url.pathname);
             const fullPath = this.BasePath + filepath;
