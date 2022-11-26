@@ -65,7 +65,6 @@ export class FileServer {
         }
 
         for await (const requestEvent of httpConn) {
-            console.log(requestEvent.request.method);
             const url = new URL(requestEvent.request.url);
             const filepath = decodeURIComponent(url.pathname);
             const fullPath = this.BasePath + filepath;
