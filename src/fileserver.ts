@@ -56,7 +56,13 @@ export class FileServer {
      * @returns null
      */
     private async handleHttp(conn: Deno.Conn) {
-        const httpConn = Deno.serveHttp(conn);
+        let httpConn: Deno.HttpConn;
+        try {
+            httpConn = Deno.serveHttp(conn);
+        } catch (error) {
+            console.error(error);
+            return;
+        }
 
         for await (const requestEvent of httpConn) {
             console.log(requestEvent.request.method);
