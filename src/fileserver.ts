@@ -64,7 +64,6 @@ export class FileServer {
                 const filepath = decodeURIComponent(url.pathname);
                 
                 if(!isValidPath(filepath)) {
-                  console.log(filepath);
                   return await send404(requestEvent);
                 }
 
@@ -101,7 +100,7 @@ export class FileServer {
 
         async function send404(requestEvent: Deno.RequestEvent) {
             await requestEvent.respondWith(
-                new Response(null, {
+                new Response("Don't even try 😘", {
                     status: 404,
                 })
             );
