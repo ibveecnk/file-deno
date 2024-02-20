@@ -1,6 +1,6 @@
 import { FileServer } from "./src/fileserver.ts";
 
-const BasePath = "./data";
+const BasePath = "/Users/iven/repos/";
 const Port = 3000;
 
 const fs = new FileServer(Port, BasePath);

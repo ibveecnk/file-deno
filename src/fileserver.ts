@@ -62,6 +62,12 @@ export class FileServer {
             for await (const requestEvent of httpConn) {
                 const url = new URL(requestEvent.request.url);
                 const filepath = decodeURIComponent(url.pathname);
+                
+                if(!isValidPath(filepath)) {
+                  console.log(filepath);
+                  return await send404(requestEvent);
+                }
+
                 const fullPath = this.BasePath + filepath;
 
                 // Guard

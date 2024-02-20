@@ -1,5 +1,5 @@
-const Readable = ["", "txt", "md", "README", "html", "css"];
-const PathRegex = /^\.{0,2}?\/(?:[^/]+\/)*[^/]+\/?$/;
+const Readable = ["", "txt", "md", "README", "html", "css", "rs", "c", "s", "toml"];
+const PathRegex = /^\/(?:[^/\.]+\/)*[^/]+\/?$/;  
 type HtmlParams = {
     param: string;
     value: string;
@@ -24,7 +24,7 @@ export const isReadable = (ext: string) => {
  * @returns is the path valid?
  */
 export const isValidPath = (path: string) => {
-    return !!path.match(PathRegex);
+    return path == "/" || !!path.match(PathRegex);
 };
 
 /**
